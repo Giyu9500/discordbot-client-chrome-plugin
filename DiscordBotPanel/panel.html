@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>Discord Bot Panel</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="admin-panel.css">
+  <link rel="stylesheet" href="enhancements.css">
+  <link rel="stylesheet" href="redesign-v1.9.css">
+  <link rel="stylesheet" href="redesign-v1.10.css">
+  <link rel="stylesheet" href="update-v1.11.css">
+  <link rel="stylesheet" href="update-v1.12.css">
+  <link rel="stylesheet" href="update-v1.12.1.css">
+  <script src="rich-renderer.js" defer></script>
+  <script src="app.js" defer></script>
+  <script src="admin-panel.js" defer></script>
+  <script src="enhancements.js" defer></script>
+  <script src="update-v1.11.js" defer></script>
+  <script src="update-v1.12.js" defer></script>
+  <script src="update-v1.12-admin.js" defer></script>
+  <script src="update-v1.12.1.js" defer></script>
+</head>
+<body>
+  <div id="login-view" class="login-view">
+    <div class="login-art" aria-hidden="true"><div class="art-orb art-orb-one"></div><div class="art-orb art-orb-two"></div></div>
+    <main class="login-card">
+      <div class="brand-large"><div class="logo-square">✦</div><div><strong>Discord Bot Panel</strong><small>Niezależny klient Twojego bota</small></div></div>
+      <div class="eyebrow">POŁĄCZ Z DISCORDEM</div>
+      <h1>Witaj z powrotem.</h1>
+      <p class="intro">Zaloguj się tokenem <strong>bota</strong>, aby przeglądać jego serwery, czytać wiadomości i pisać w jego imieniu.</p>
+      <p class="bridge-note"><strong>Przed zalogowaniem:</strong> jednorazowo uruchom <code>INSTALUJ-AUTOSTART.bat</code> (ID rozszerzenia: <code id="extension-id"></code>). Potem pomocnik uruchamia się sam z otwarciem karty.</p>
+      <form id="login-form">
+        <label for="token-input" class="input-label">Token bota</label>
+        <div class="token-wrapper"><input id="token-input" type="password" name="token" placeholder="Wklej token bota…" autocomplete="off" spellcheck="false" required><button type="button" id="token-visibility" class="mini-icon" aria-label="Pokaż lub ukryj token" title="Pokaż / ukryj token">◉</button></div>
+        <label class="check-row"><input id="remember-token" type="checkbox"><span>Zapamiętaj token na tym urządzeniu <small>(niezalecane na współdzielonym komputerze)</small></span></label>
+        <label class="check-row"><input id="content-intent" type="checkbox" checked><span>Włącz Message Content Intent <small>(musi być także włączone w Discord Developer Portal)</small></span></label>
+        <label class="check-row"><input id="v12-presence-intent" type="checkbox" checked><span>Pokazuj statusy członków <small>(wymaga włączonego Server Presences Intent w Discord Developer Portal)</small></span></label>
+      <p id="login-error" class="login-error hidden" role="alert"></p>
+        <button type="submit" id="login-button" class="primary-button full">Połącz z botem <span aria-hidden="true">→</span></button>
+      </form>
+      <div class="security-note"><span class="shield-icon">◆</span><span>Żądania API przechodzą przez lokalny pomocnik Node.js uruchomiony wyłącznie na Twoim komputerze (127.0.0.1). Pomocnik przekazuje je do Discorda, nie zapisuje tokenu i nie jest dostępny przez sieć lokalną. Bez zaznaczonego zapamiętywania token jest przechowywany jedynie w sesji przeglądarki.</span></div>
+      <p class="login-footer">Używaj wyłącznie <strong>tokenu własnego bota</strong> — nie tokenu zwykłego konta Discord.</p>
+    </main>
+  </div>
+
+  <div id="app-view" class="app-view hidden">
+    <aside id="guild-rail" class="guild-rail" aria-label="Serwery">
+      <button type="button" id="dm-home" class="guild-button dm-home" title="Wiadomości prywatne" aria-label="Wiadomości prywatne">✉</button><button type="button" id="new-dm-button" class="hidden" title="Nowa wiadomość prywatna">＋</button><div class="rail-divider"></div>
+      <div id="guild-list" class="guild-list"></div>
+      <div class="rail-bottom"><button id="rail-help" class="rail-help" title="Instrukcja">?</button></div>
+    </aside>
+
+    <aside class="channel-sidebar" aria-label="Kanały">
+      <header class="server-header"><button type="button" id="server-menu-toggle" class="server-menu-toggle" aria-expanded="false" title="Menu serwera"><span id="guild-title" class="guild-title">Wybierz serwer</span><span class="server-menu-chevron" aria-hidden="true">⌄</span></button><button type="button" id="refresh-channels-button" class="hidden" aria-hidden="true" tabindex="-1">↻</button><div id="server-menu" class="server-menu hidden" role="menu" aria-label="Menu serwera"></div></header>
+      <div id="dm-sidebar-actions" class="dm-sidebar-actions hidden"><span>WIADOMOŚCI PRYWATNE</span><button type="button" id="dm-create-button" title="Nowa rozmowa" aria-label="Nowa rozmowa">＋</button></div><div id="channel-list" class="channel-list"></div>
+      <div class="account-box">
+        <div id="my-avatar" class="avatar avatar-self">B</div>
+        <div class="account-meta">
+          <span id="account-connection" class="account-connection"><span class="account-live-dot"></span> <span id="account-connection-text">Łączenie…</span></span><strong id="my-name">Bot</strong>
+          <small id="my-id">Brak połączenia</small>
+          <button type="button" id="presence-open-button" class="presence-open-button" title="Zmień status i aktywność">
+            <span id="presence-dot" class="presence-dot online" aria-hidden="true"></span><span id="presence-label">Dostępny</span><span class="presence-chevron" aria-hidden="true">⌄</span>
+          </button>
+        </div>
+        <button type="button" id="logout-button" class="logout-power" aria-label="Wyloguj" title="Wyloguj i usuń zapisany token"><span aria-hidden="true">⏻</span><span class="logout-tip">WYLOGUJ</span></button>
+      </div>
+    </aside>
+
+    <main class="chat-area">
+      <header class="chat-header">
+        <div class="chat-header-title"><span class="hash-symbol">#</span><strong id="channel-title">Wybierz kanał</strong><button type="button" id="v12-invite" class="v12-invite" title="Zaproś osoby" aria-label="Zaproś osoby"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><path d="M20 8v6M17 11h6"/></svg></button><span id="channel-topic" class="channel-topic"></span></div>
+        <div class="header-actions">
+          <button type="button" id="pp-threads-button" class="header-feature-button header-icon-only" title="Wątki i posty" aria-label="Wątki i posty">☷</button>
+          <button type="button" id="pp-pins-button" class="header-feature-button header-icon-only" title="Przypięte wiadomości" aria-label="Przypięte wiadomości">📌</button>
+          <button type="button" id="pp-members-button" class="header-feature-button header-icon-only" title="Pokaż / ukryj członków" aria-label="Pokaż / ukryj członków" aria-pressed="false">👥</button>
+          <button type="button" id="pp-alerts-button" class="hidden" aria-hidden="true">Zdarzenia</button>
+          <button type="button" id="audit-open-button" class="hidden" aria-hidden="true">Audyt</button>
+          <button type="button" id="settings-open-button" class="hidden" aria-hidden="true">Ustawienia</button>
+          <button type="button" id="open-search-button" class="search-trigger" title="Wyszukaj wiadomości na serwerze (Ctrl+K)" aria-label="Wyszukaj wiadomości">⌕ <span>Szukaj</span></button>
+          <span id="gateway-pill" class="connection-pill connecting hidden"><span class="status-dot"></span><span id="gateway-status">Łączenie…</span></span>
+          <button id="refresh-button" type="button" class="hidden" aria-hidden="true" tabindex="-1">↻</button>
+        </div>
+      </header>
+      <div id="v12-unread-banner" class="v12-unread-banner hidden"><span>Nowe wiadomości</span><button id="v12-read-now" type="button">Oznacz jako przeczytane i skocz do najnowszych ↓</button></div>
+      <div id="warning-banner" class="warning-banner hidden"></div>
+      <div id="message-scroller" class="message-scroller">
+        <div id="chat-placeholder" class="chat-placeholder"><div class="placeholder-icon">✦</div><h2>Twój Discord. Twój bot.</h2><p>Wybierz serwer i kanał po lewej stronie, aby wyświetlić rozmowę.</p></div>
+        <div id="message-content" class="message-content hidden"><div id="older-status" class="older-status hidden" role="status">Wczytywanie starszych wiadomości…</div><button id="load-more-button" class="load-more-button hidden" type="button">Wczytaj starsze wiadomości</button><div id="messages" class="messages" role="log" aria-live="polite" aria-relevant="additions"></div></div>
+      </div>
+      <button id="latest-button" type="button" class="latest-button hidden">↓ Przejdź do najnowszych</button>
+      <aside id="search-panel" class="search-panel hidden" aria-label="Wyszukiwarka wiadomości">
+        <div class="search-panel-head"><strong>Wyszukaj wiadomości</strong><button type="button" id="search-back-button" class="search-back-button hidden" title="Wróć do filtrów">← Filtry</button><button type="button" id="close-search-button" class="icon-button" title="Zamknij wyszukiwarkę" aria-label="Zamknij">×</button></div>
+        <form id="search-form" class="search-form">
+          <label for="search-text">Szukana treść</label>
+          <input id="search-text" type="search" maxlength="1024" placeholder="Wpisz słowo lub frazę…" autocomplete="off" spellcheck="false">
+          <div class="search-filter-grid">
+            <div><label for="search-channel">Kanał</label><select id="search-channel"><option value="">Cały serwer</option></select></div>
+            <div><label for="search-has">Zawiera</label><select id="search-has"><option value="">Dowolna wiadomość</option><option value="image">Obraz</option><option value="file">Plik</option><option value="video">Wideo</option><option value="link">Link</option><option value="embed">Embed</option><option value="poll">Ankieta</option></select></div>
+            <div><label for="search-after">Od daty</label><input type="date" id="search-after"></div>
+            <div><label for="search-before">Do daty</label><input type="date" id="search-before"></div>
+            <div class="search-filter-full"><label for="search-author">Autor (ID użytkownika, opcjonalnie)</label><input id="search-author" inputmode="numeric" placeholder="Np. 123456789012345678" pattern="[0-9]*"></div>
+            <div class="search-filter-full"><label for="search-order">Kolejność wyników</label><select id="search-order"><option value="desc">Najnowsze najpierw</option><option value="asc">Najstarsze najpierw</option><option value="relevance">Najbardziej trafne</option></select></div>
+          </div>
+          <button type="submit" id="search-submit" class="primary-button full">⌕ Szukaj na serwerze</button>
+        </form>
+        <div id="search-description" class="search-description">Wyniki pochodzą z wyszukiwarki Discord API. Wybierz filtry i kliknij „Szukaj”.</div>
+        <div id="search-results" class="search-results" role="region" aria-label="Wyniki wyszukiwania"></div>
+        <div class="search-pagination"><div id="v12-search-pages" class="v12-search-pages"></div><button type="button" id="search-more-button" class="secondary-button hidden">Pokaż kolejne wyniki</button></div>
+      </aside>
+      <div class="composer-zone">
+        <div id="reply-banner" class="reply-banner hidden"><span id="reply-label"></span><button id="cancel-reply" aria-label="Anuluj odpowiedź">×</button></div>
+        <div id="file-banner" class="file-banner hidden"><span id="file-label"></span><button id="cancel-file" aria-label="Usuń załącznik">×</button></div>
+        <form id="message-form" class="composer">
+          <button type="button" id="attach-button" class="attach-button" aria-label="Dodaj załącznik" title="Dodaj plik">＋</button>
+          <input type="file" id="attachment-input" hidden>
+          <textarea id="message-input" rows="1" placeholder="Wybierz kanał…" disabled maxlength="2000" aria-label="Treść wiadomości"></textarea>
+          <button type="button" id="composer-emoji-button" class="composer-action" aria-label="Wybierz emoji" title="Emoji">☺</button>
+          <button type="button" id="composer-sticker-button" class="composer-action" aria-label="Wybierz naklejkę" title="Naklejki">▧</button>
+          <button type="submit" id="send-button" class="send-button" disabled title="Wyślij wiadomość" aria-label="Wyślij">➤</button>
+        </form>
+        <div class="composer-caption"><span>Enter — wyślij · Shift+Enter — nowa linia</span><span id="char-counter">0/2000</span></div>
+      </div>
+    </main>
+  </div>
+
+  <section id="admin-view" class="admin-view hidden" aria-label="Ustawienia" role="dialog" aria-modal="true">
+    <aside class="admin-sidebar">
+      <div id="admin-server-name" class="admin-guild-name">USTAWIENIA</div>
+      <nav id="admin-navigation" class="admin-navigation" aria-label="Kategorie ustawień"></nav>
+      <div class="admin-side-foot">Discord Bot Panel <span id="admin-version">1.12.1</span></div>
+    </aside>
+    <main class="admin-main">
+      <div class="admin-top"><div><div class="admin-eyebrow" id="admin-eyebrow">USTAWIENIA SERWERA</div><h1 id="admin-title">Ustawienia</h1></div>
+      <button type="button" id="admin-close" class="admin-close" title="Zamknij (Esc)">✕ <small>ESC</small></button></div>
+      <div id="admin-content" class="admin-content"></div>
+    </main>
+  </section>
+  <div id="channel-context" class="channel-context hidden" role="menu"></div>
+  <div id="toast-layer" class="toast-layer" aria-live="assertive"></div>
+  <dialog id="dm-dialog" class="edit-dialog feature-dialog">
+    <form id="dm-form"><h2>Nowa wiadomość prywatna</h2>
+      <p class="muted-hint">Wpisz ID użytkownika Discorda (nie token). Bot może napisać tylko wtedy, gdy Discord pozwala na kontakt.</p>
+      <label for="dm-user-id">ID użytkownika</label><input id="dm-user-id" class="feature-input" inputmode="numeric" pattern="[0-9]{16,22}" required placeholder="123456789012345678">
+      <div class="dialog-actions"><button type="button" data-close="dm-dialog" class="secondary-button">Anuluj</button><button type="submit" class="primary-button">Otwórz rozmowę</button></div>
+    </form>
+  </dialog>
+  <dialog id="profile-dialog" class="edit-dialog feature-dialog">
+    <div class="profile-banner" id="profile-banner"></div>
+    <div class="profile-content"><div class="profile-summary"><div id="profile-avatar" class="avatar profile-avatar">?</div><div><h2 id="profile-name">Profil</h2><div id="profile-username"></div></div></div>
+      <div id="profile-details" class="profile-details"></div><div id="profile-roles" class="profile-roles"></div>
+      <div class="dialog-actions"><button type="button" data-close="profile-dialog" class="secondary-button">Zamknij</button><button type="button" id="profile-dm" class="primary-button">✉ Napisz prywatnie</button></div>
+    </div>
+  </dialog>
+  <dialog id="audit-dialog" class="edit-dialog feature-dialog feature-large">
+    <h2>☷ Dziennik audytu serwera</h2><p class="muted-hint">Ostatnie operacje administratorów i moderacji Discorda. Wymagane: Wyświetlanie dziennika audytu.</p>
+    <div id="audit-items" class="feature-scroll"></div>
+    <div class="dialog-actions"><button type="button" id="audit-more" class="secondary-button">Starsze wpisy</button><button type="button" data-close="audit-dialog" class="primary-button">Zamknij</button></div>
+  </dialog>
+  <dialog id="server-dialog" class="edit-dialog feature-dialog feature-large">
+    <form id="server-form"><h2>⚙ Ustawienia serwera</h2><p id="server-settings-info" class="muted-hint">Ładowanie…</p>
+      <label for="server-name-input">Nazwa serwera</label><input id="server-name-input" class="feature-input" minlength="2" maxlength="100" required>
+      <label for="server-description-input">Opis serwera</label><textarea id="server-description-input" class="feature-input" rows="4" maxlength="1024" placeholder="Opis serwera (jeśli dostępny)"></textarea>
+      <label for="server-verification-input">Poziom weryfikacji</label><select id="server-verification-input" class="feature-input"><option value="0">Brak</option><option value="1">Niski</option><option value="2">Średni</option><option value="3">Wysoki</option><option value="4">Najwyższy</option></select>
+      <p class="muted-hint">Zmiany wpływają na prawdziwy serwer Discord. Do zapisania wymagane jest Zarządzanie serwerem. Inne ustawienia, np. role i uprawnienia kanałów, nie są jeszcze edytowane.</p>
+      <div class="dialog-actions"><button type="button" data-close="server-dialog" class="secondary-button">Anuluj</button><button type="submit" id="server-save" class="primary-button">Zapisz zmiany</button></div>
+    </form>
+  </dialog>
+  <dialog id="presence-dialog" class="edit-dialog presence-dialog">
+    <form id="presence-form">
+      <h2>Obecność i aktywność bota</h2>
+      <label class="presence-field" for="presence-status-input">Status</label>
+      <select id="presence-status-input" class="presence-input">
+        <option value="online">🟢 Dostępny</option>
+        <option value="idle">🌙 Zaraz wracam</option>
+        <option value="dnd">⛔ Nie przeszkadzać</option>
+        <option value="invisible">⚪ Niewidoczny</option>
+      </select>
+      <label class="presence-field" for="activity-type-input">Rodzaj aktywności</label>
+      <select id="activity-type-input" class="presence-input">
+        <option value="0">Gra w</option>
+        <option value="2">Słucha</option>
+        <option value="3">Ogląda</option>
+        <option value="5">Rywalizuje w</option>
+      </select>
+      <label class="presence-field" for="activity-name-input">Nazwa aktywności (opcjonalnie)</label>
+      <input id="activity-name-input" class="presence-input" type="text" placeholder="Bez aktywności — zostaw puste" maxlength="128" spellcheck="false" autocomplete="off">
+      <p class="presence-hint">Zmiany są wysyłane przez Gateway, gdy panel jest połączony. Druga instancja bota na IceHost może nadpisać status. Niewidoczny może nadal odbierać i wysyłać wiadomości.</p>
+      <div class="dialog-actions"><button type="button" id="cancel-presence" class="secondary-button">Anuluj</button><button type="submit" class="primary-button">Zapisz status</button></div>
+    </form>
+  </dialog>
+  <dialog id="edit-dialog" class="edit-dialog"><form id="edit-form"><h2>Edytuj wiadomość</h2><textarea id="edit-text" rows="5" maxlength="2000" required></textarea><div class="dialog-actions"><button type="button" id="cancel-edit" class="secondary-button">Anuluj</button><button class="primary-button" type="submit">Zapisz zmiany</button></div></form></dialog>
+</body>
+</html>

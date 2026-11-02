@@ -1,0 +1,64 @@
+/* Discord Bot Panel 1.9 — compact discord-like workspace */
+:root{--layout-sidebar:#2b2d31;--layout-chat:#313338;--layout-surface:#232428;--layout-line:#1e1f22;--layout-hover:#3f4249;--layout-accent:#5865f2}
+.app-view{background:var(--layout-chat)}
+.guild-rail{background:#1e1f22;gap:9px}.rail-brand{background:#5865f2;border-radius:17px}
+.channel-sidebar{flex-basis:240px;background:var(--layout-sidebar)}
+.server-header{position:relative;display:flex;padding:0 8px;box-shadow:0 1px 2px #0003;background:#2b2d31}
+.server-menu-toggle{width:100%;height:60px;padding:0 10px;display:flex;align-items:center;justify-content:space-between;gap:14px;border:0;background:transparent;color:#f2f3f5;text-align:left;border-radius:5px;min-width:0}
+.server-menu-toggle:hover,.server-menu-toggle[aria-expanded=true]{background:#373a43}
+.server-menu-chevron{font-size:20px;color:#bfc3ce;transition:transform .12s}.server-menu-toggle[aria-expanded=true] .server-menu-chevron{transform:rotate(180deg)}
+.server-menu{position:absolute;z-index:120;left:8px;right:8px;top:57px;background:#111214;border:1px solid #393c43;border-radius:7px;box-shadow:0 16px 36px #0009;padding:6px;display:flex;flex-direction:column;gap:2px}
+.server-menu-entry{border:0;color:#c7c9d0;background:transparent;text-align:left;border-radius:4px;padding:11px 12px;font-size:12px;min-height:37px;font-weight:550}
+.server-menu-entry:hover{background:#5865f2;color:#fff}.server-menu-entry:focus-visible{outline:2px solid #7d90ff}
+.channel-list{padding-top:12px}.category-title{padding:13px 9px 5px}.channel-entry{padding:7px 10px}.channel-entry:hover{background:#36393f}.channel-entry.active{background:#404249}
+.dm-home{background:#323743;color:#d5dbff}.dm-home:hover,.dm-home.active{background:#5865f2;color:white}
+.dm-sidebar-actions{display:flex;align-items:center;justify-content:space-between;padding:13px 14px 0;color:#999ba5;font-weight:800;letter-spacing:.4px;font-size:10px}
+.dm-sidebar-actions button{background:none;border:0;color:#aaaeb9;font-size:21px;width:30px;height:30px;border-radius:5px}.dm-sidebar-actions button:hover{background:#444750;color:white}
+.account-box{background:#232428;border-top:1px solid #18191d;gap:9px;padding:11px 9px;min-height:74px}
+.account-meta{display:flex;flex-direction:column;gap:0}.account-meta strong{font-size:13px;color:#f2f3f7}.account-meta small{font-size:10px}
+.account-connection{display:flex;align-items:center;gap:5px;font-size:10px;font-weight:700;color:#aab0bc;order:-1;margin-bottom:4px;white-space:nowrap}
+.account-connection.online{color:#4ac58d}.account-connection.offline{color:#e27879}.account-live-dot{width:6px;height:6px;border-radius:50%;background:#f0b353}.account-connection.online .account-live-dot{background:#4ac58d}.account-connection.offline .account-live-dot{background:#e27879}
+.presence-open-button{margin-top:3px;font-size:10px;color:#9ba0ad;padding:0}.presence-dot{width:7px;height:7px;flex-basis:7px}
+.logout-power{flex-shrink:0;display:flex;flex-direction:column;gap:1px;align-items:center;justify-content:center;color:#ff8d96;background:#43272d;border:1px solid #713740;width:42px;height:43px;border-radius:9px;padding:2px}
+.logout-power:hover{color:#fff;background:#9d3848}.logout-power>span:first-child{font-size:21px;line-height:22px}.logout-tip{font-size:7px;font-weight:800;letter-spacing:.4px}
+.chat-area{background:#313338}.chat-header{height:60px;padding:0 16px;background:#313338;border-bottom:1px solid #27292e}.chat-header-title{flex:1;min-width:0}.chat-header-title strong{font-size:14px}
+.header-actions{gap:6px}.header-actions .header-icon-only{font-size:21px;padding:3px;display:grid;place-items:center;background:transparent;border:0;color:#b4b8c3;width:34px;height:34px;border-radius:6px}
+.header-actions .header-icon-only:hover,.header-actions .header-icon-only[aria-pressed=true]{color:#f6f7ff;background:#414550}.header-actions .search-trigger{height:31px;min-width:115px;margin-left:7px;background:#232428;border-color:#41444d}
+.connection-pill.hidden,#refresh-button.hidden,#refresh-channels-button.hidden{display:none!important}
+/* The member roster is a real flex column, not a floating modal covering chat. */
+.pp-member-dock{flex:0 0 228px;width:228px;min-width:0;background:#2b2d31;border-left:1px solid #222428;display:flex;flex-direction:column;height:100%;overflow:hidden;color:#dbdce1}
+.pp-member-dock.hidden{display:none}.pp-member-dock-head{height:60px;flex-shrink:0;padding:0 10px 0 16px;border-bottom:1px solid #24262b;display:flex;align-items:center;justify-content:space-between}.pp-member-dock-head strong{font-size:13px}
+.pp-member-dock .pp-close{font-size:15px}.pp-roster-search{display:block;margin:9px 10px 3px}.pp-roster-search span{display:none}.pp-roster-search input{background:#1e1f22;border:0;border-radius:5px;padding:9px;font-size:12px;min-width:0}
+.pp-roster-scroll{flex:1;min-height:0;overflow-y:auto;padding:6px 7px;scrollbar-color:#1e1f22 transparent;scrollbar-width:thin}.pp-members-list{max-height:none;overflow:visible;margin:0}
+.pp-roster-group{margin-bottom:14px}.pp-roster-group-title{font-weight:750;color:#9498a4;font-size:10px;letter-spacing:.4px;padding:13px 7px 7px;overflow-wrap:anywhere}
+.pp-roster-member{padding:6px 8px;border-radius:4px;gap:9px;min-height:39px}.pp-roster-member:hover{background:#373a41}.pp-roster-member .pp-member-avatar{width:30px;height:30px;flex-basis:30px}.pp-roster-member .pp-member-meta strong{font-size:12px;color:#d6d8dc}
+.pp-member-dock-foot{border-top:1px solid #222428;padding:5px 11px 10px}.pp-member-dock-foot .pp-hint{font-size:10px;display:block;margin:6px 0}.pp-member-dock-foot .pp-button{width:100%;font-size:11px;padding:7px}
+/* Drawers for pins/search and other features stay separate from permanent member list. */
+.chat-area.pp-members-open{padding-right:0!important}.chat-area.pp-members-open .pp-drawer{width:min(370px,100%)}
+@media(max-width:1100px){.pp-member-dock{flex-basis:205px;width:205px}.channel-sidebar{flex-basis:215px}.header-actions .header-icon-only{width:30px}.chat-header-title .channel-topic{max-width:160px}}
+@media(max-width:800px){.pp-member-dock{flex-basis:180px;width:180px}.channel-sidebar{flex-basis:190px}.header-actions .search-trigger{min-width:32px;padding:0 6px}.chat-header-title .channel-topic{display:none}}
+/* Settings: clear hierarchy, navigation and readable permissions */
+.admin-view{background:#313338}.admin-sidebar{background:#2b2d31;border-right:1px solid #232429;padding-top:30px;gap:13px}
+.admin-navigation{gap:2px}.admin-nav-item{min-height:34px;padding:9px 12px;line-height:1.2;border-radius:4px;color:#b5bac1;font-size:12px}.admin-nav-item.active{background:#404249;color:white;box-shadow:none}.admin-nav-item:hover{background:#35373c}
+.admin-main{background:#313338;padding-top:29px}.admin-top{padding-bottom:16px;margin-bottom:16px;border-bottom:1px solid #43454b;align-items:center}.admin-top h1{font-size:23px}.admin-content{max-width:850px}
+.adm-card{background:#313338;border:0;border-bottom:1px solid #47494f;border-radius:0;box-shadow:none;margin:0 0 22px;padding:12px 3px 24px}.adm-card h2{font-size:17px;font-weight:750;border:0;padding:0;margin:0 0 17px}.adm-card h3{font-size:12px;color:#bfc4ce}
+.adm-field{margin-bottom:18px;gap:7px}.adm-field span{font-size:12px;color:#d5d8e1;font-weight:600}.adm-field input,.adm-field textarea,.adm-field select{background:#1e1f22;border:1px solid #25272d;border-radius:4px;padding:11px 12px;min-height:39px;font-size:13px}.adm-note{color:#aaadb9}
+.adm-btn{border-radius:4px;font-size:12px}.adm-btn.subtle{background:#43454e}.adm-list-col{background:#292b30;padding:7px;border-radius:6px}.adm-list-item{border-radius:4px;padding:9px 10px}
+.adm-perm-sections,.adm-permissions-tristate{display:flex;flex-direction:column;max-height:none;overflow:visible;gap:14px}
+.adm-perm-section{background:#2b2d31;border:1px solid #41444b;border-radius:7px;padding:13px 15px;margin:0 0 3px;min-width:0}
+.adm-perm-section h4{font-size:12px;font-weight:800;color:#f1f2f5;margin:0 0 10px;padding-bottom:10px;border-bottom:1px solid #42454c}
+.adm-perm-section .adm-perm-grid{border:0;max-height:none;overflow:visible;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 15px;padding:0}
+.adm-perm-section .adm-perm-grid .adm-check{background:transparent;padding:4px;font-size:12px;min-height:36px;line-height:1.4}
+.adm-perm-section .adm-tri-row{background:transparent;border-bottom:1px solid #393b43;border-radius:0;padding:9px 0;min-height:43px}.adm-perm-section .adm-tri-row:last-child{border-bottom:0}
+.adm-tri-row>span{font-size:12px;color:#d0d3dc}.adm-tri-buttons{display:flex;flex-shrink:0;align-items:center;gap:2px;background:#1e1f22;padding:3px;border-radius:7px}
+.adm-tri-buttons button{width:35px;height:29px;border:0;border-radius:5px;background:transparent;color:#a3a7b3;font-size:16px;font-weight:700}
+.adm-tri-buttons button:hover{background:#464951;color:white}.adm-tri-buttons button[data-state=neutral].active{background:#52545c;color:white}.adm-tri-buttons button[data-state=allow].active{background:#235b48;color:#67e4a5}.adm-tri-buttons button[data-state=deny].active{background:#72313c;color:#ff909b}
+.adm-hidden-select{position:absolute!important;opacity:0!important;width:1px!important;height:1px!important;pointer-events:none!important}
+.adm-split{grid-template-columns:minmax(175px,210px) minmax(0,1fr)}
+@media(max-width:970px){.admin-sidebar{width:195px}.admin-main{padding:25px 18px 75px}.adm-perm-section .adm-perm-grid{grid-template-columns:1fr}}
+
+/* Legacy actions are now served by the server-name menu. */
+#refresh-channels-button,#refresh-button,#audit-open-button,#settings-open-button,#pp-alerts-button{display:none!important}
+.header-actions .header-icon-only{font-size:18px}.header-actions .header-icon-only[aria-pressed=true]{color:#fff}
+.admin-nav-heading{padding:15px 12px 7px;margin-top:8px;font-size:10px;font-weight:800;letter-spacing:.7px;color:#9497a4;text-transform:uppercase}
+.admin-nav-heading:first-child{margin-top:0;padding-top:5px}
